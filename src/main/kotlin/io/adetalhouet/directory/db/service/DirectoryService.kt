@@ -34,7 +34,6 @@ class DirectoryServiceImpl : DirectoryService {
     }
 
     override suspend fun get(id: Int): Person? = dbQuery {
-        println("$id")
         PersonDAO.findById(id)?.toPerson()
     }
 
