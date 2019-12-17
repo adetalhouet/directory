@@ -14,6 +14,8 @@ plugins {
     id("com.google.cloud.tools.jib") version "1.6.1"
 
     id("org.flywaydb.flyway") version "6.1.1"
+
+    id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
 group = "io.adetalhouet.directory"

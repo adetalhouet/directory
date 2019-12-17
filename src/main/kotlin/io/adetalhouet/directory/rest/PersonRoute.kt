@@ -32,7 +32,7 @@ import io.ktor.util.KtorExperimentalAPI
 @KtorExperimentalAPI
 fun Route.person(directoryService: DirectoryService) {
 
-    route("/person") {
+    route("/people") {
 
         get() {
             call.respond(HttpStatusCode.OK, directoryService.getAll())

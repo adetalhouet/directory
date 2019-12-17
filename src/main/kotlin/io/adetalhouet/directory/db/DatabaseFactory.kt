@@ -34,7 +34,6 @@ object DatabaseFactory {
             jdbcUrl = dbUrl
             username = dbUser
             password = dbPassword
-            maximumPoolSize = 3
             isAutoCommit = false
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         }
