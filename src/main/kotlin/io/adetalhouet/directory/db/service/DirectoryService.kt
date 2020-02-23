@@ -17,28 +17,36 @@ package io.adetalhouet.directory.db.service
 
 import io.adetalhouet.directory.db.DatabaseFactory.dbQuery
 import io.adetalhouet.directory.db.model.Person
-import io.adetalhouet.directory.db.model.PersonDAO
+import io.adetalhouet.directory.db.model.PersonRepository
 import io.ktor.util.KtorExperimentalAPI
+import org.koin.core.KoinComponent
+import org.slf4j.LoggerFactory
 
 interface DirectoryService {
     suspend fun getAll(): List<Person>
     suspend fun get(id: Int): Person?
-    suspend fun create(person: Person): Unit
+    suspend fun create(person: Person)
 }
 
 @KtorExperimentalAPI
-class DirectoryServiceImpl : DirectoryService {
+class DirectoryServiceImpl : DirectoryService, KoinComponent {
+
+    private val log = LoggerFactory.getLogger(DirectoryServiceImpl::class.java)
+
+    init {
+        log.info("STARTED")
+    }
 
     override suspend fun getAll(): List<Person> = dbQuery {
-        PersonDAO.all().map { it.toPerson() }
+        PersonRepository.all().map { it.toPerson() }
     }
 
     override suspend fun get(id: Int): Person? = dbQuery {
-        PersonDAO.findById(id)?.toPerson()
+        PersonRepository.findById(id)?.toPerson()
     }
 
     override suspend fun create(person: Person): Unit = dbQuery {
-        PersonDAO.new {
+        PersonRepository.new {
             alive = person.alive
             name = person.name
             sex = person.sex
@@ -48,5 +56,5 @@ class DirectoryServiceImpl : DirectoryService {
         }
     }
 
-    suspend fun delete(personDAO: PersonDAO) = dbQuery { personDAO.delete() }
+    suspend fun delete(personRepository: PersonRepository) = dbQuery { personRepository.delete() }
 }

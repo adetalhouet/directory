@@ -33,8 +33,8 @@ object PersonTable : IntIdTable("Persons") {
     var children = integer("children")
 }
 
-class PersonDAO(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<PersonDAO>(PersonTable)
+class PersonRepository(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<PersonRepository>(PersonTable)
 
     var alive by PersonTable.alive
     var name by PersonTable.name

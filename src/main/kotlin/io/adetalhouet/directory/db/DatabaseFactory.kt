@@ -10,9 +10,11 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.koin.core.KoinComponent
+import org.slf4j.LoggerFactory
 
 @KtorExperimentalAPI
-object DatabaseFactory {
+class DatabaseConfiguration : KoinComponent {
 
     private val appConfig = HoconApplicationConfig(ConfigFactory.load())
     private val dbUrl = appConfig.property("db.jdbcUrl").getString()
@@ -20,7 +22,13 @@ object DatabaseFactory {
     private val dbPassword = appConfig.property("db.dbPassword").getString()
     private val dbDriver = appConfig.property("db.driver").getString()
 
-    fun init() {
+    private val log = LoggerFactory.getLogger(DatabaseConfiguration::class.java)
+
+    init {
+        log.info("STARTED")
+    }
+
+    init {
         Database.connect(hikari())
 
         transaction {
@@ -40,7 +48,10 @@ object DatabaseFactory {
         config.validate()
         return HikariDataSource(config)
     }
+}
 
+
+object DatabaseFactory {
     @KtorExperimentalAPI
     suspend fun <T> dbQuery(block: () -> T): T = newSuspendedTransaction { block() }
 }

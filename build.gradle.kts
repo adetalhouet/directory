@@ -4,8 +4,8 @@ val logback_version: String by project
 val exposed_version: String by project
 val hikari_version: String by project
 val mysql_version: String by project
-
-val docker_id = "adetalhouet"
+val koin_version: String by project
+val docker_id: String by project
 
 plugins {
     application
@@ -29,13 +29,15 @@ repositories {
     mavenLocal()
     jcenter()
     mavenCentral()
-    maven { url = uri("https://kotlin.bintray.com/ktor") }
 }
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
+
+    implementation("org.koin:koin-core:$koin_version")
+    implementation("org.koin:koin-ktor:$koin_version")
 
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
@@ -49,6 +51,7 @@ dependencies {
     implementation("mysql:mysql-connector-java:$mysql_version")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    testImplementation("org.koin:koin-test:$koin_version")
 }
 
 tasks.compileKotlin {

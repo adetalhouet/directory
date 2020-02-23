@@ -18,6 +18,7 @@ package io.adetalhouet.directory.rest
 import com.fasterxml.jackson.core.JsonProcessingException
 import io.adetalhouet.directory.db.model.Person
 import io.adetalhouet.directory.db.service.DirectoryService
+import io.adetalhouet.directory.db.service.DirectoryServiceImpl
 import io.ktor.application.call
 import io.ktor.features.MissingRequestParameterException
 import io.ktor.http.HttpStatusCode
@@ -28,18 +29,25 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.util.KtorExperimentalAPI
+import org.koin.ktor.ext.inject
+import org.slf4j.LoggerFactory
 
 @KtorExperimentalAPI
-fun Route.person(directoryService: DirectoryService) {
+fun Route.person() {
+
+    val log = LoggerFactory.getLogger(DirectoryServiceImpl::class.java)
+    val directoryService: DirectoryService by inject()
 
     route("/people") {
 
-        get() {
+        get {
+            log.info("get all")
             call.respond(HttpStatusCode.OK, directoryService.getAll())
         }
 
         get("/{id}") {
-            val id = call.parameters["id"]?.toInt() ?: throw MissingRequestParameterException("'id' must be provided");
+            val id = call.parameters["id"]?.toInt() ?: throw MissingRequestParameterException("'id' must be provided")
+            log.info("get one $id")
             directoryService.get(id)?.let {
                 call.respond(HttpStatusCode.OK, it)
             } ?: call.respond(HttpStatusCode.NotFound)
@@ -48,6 +56,7 @@ fun Route.person(directoryService: DirectoryService) {
         post("/") {
             val (statusCode: HttpStatusCode, message: String?) = try {
                 val personData = call.receive<Person>()
+                log.info("add one $personData")
                 directoryService.create(personData)
                 HttpStatusCode.Created to null
             } catch (e: JsonProcessingException) {
